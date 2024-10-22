@@ -1,6 +1,5 @@
 package com.example.weatherapi.screens
 
-import android.graphics.fonts.FontStyle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -72,13 +73,60 @@ fun MainScreen() {
                     AsyncImage( //для загрузки фото с сервера
                         model = "https://cdn.weatherapi.com/weather/64x64/day/116.png",
                         contentDescription = "image2",
-                        modifier = Modifier.size(35.dp).padding(top = 3.dp, end = 8.dp)
+                        modifier = Modifier
+                            .size(35.dp)
+                            .padding(top = 3.dp, end = 8.dp)
                     )
 
                 }
+                Text(
+                    text = "Minsk",
+                    style = TextStyle(fontSize = 24.sp),
+                    color = Color.White
+                )
+                Text(
+                    text = "23°C",
+                    style = TextStyle(fontSize = 65.sp),
+                    color = Color.White
+                )
+                Text(
+                    text = "Sunny",
+                    style = TextStyle(fontSize = 16.sp),
+                    color = Color.White
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconButton(onClick = {
+
+                    }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_search),
+                            contentDescription = "image3",
+                            tint = Color.White
+                        )
+                    }
+                    Text(
+                        text = "23°C/12°C",
+                        style = TextStyle(fontSize = 16.sp),
+                        color = Color.White
+                    )
+                    IconButton(onClick = {
+
+                    }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_sync),
+                            contentDescription = "image4",
+                            tint = Color.White
+                        )
+                    }
+
+                }
+
             }
-
         }
-
     }
 }
