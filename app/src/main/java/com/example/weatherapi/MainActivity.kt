@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
                     contentDescription = "image1",
                     modifier = Modifier
                         .fillMaxSize()
-                        .alpha(0.8f),
+                        .alpha(0.5f),
                     contentScale = ContentScale.FillBounds  // чтобы фон растянулся на весь экран без обрезания
                 )
                 Column {

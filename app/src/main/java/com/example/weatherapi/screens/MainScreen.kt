@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -178,8 +179,14 @@ fun TabLayout() {
             count = tabList.size,
             state = pagerState,
             modifier = Modifier.weight(1.0f)
+        ) { index ->     // указывает какая страница открыта
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
             ) {
-            index ->     // указывает какая страница открыта
+                items(15) {
+                    ListItem()  //Разметка, которую клонруем 15 раз  (временное тестовое решение)
+                }
+            }
         }
     }
 }
