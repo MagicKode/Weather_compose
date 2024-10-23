@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.weatherapi.R
 import com.example.weatherapi.ui.theme.BlueLight
+import com.example.weatherapicompose.data.WeatherModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -183,8 +185,31 @@ fun TabLayout() {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(15) {
-                    ListItem()  //Разметка, которую клонруем 15 раз  (временное тестовое решение)
+                itemsIndexed(
+                    listOf(  //пока хардкодим параметры
+                        WeatherModel(  //прогноз по ЧАСАМ
+                            "Minsk",
+                            "10:00",
+                            "25°C",
+                            "Sunny",
+                            "//cdn.weatherapi.com/weather/64x64/day/116.png",
+                            "",  // если прогноз по ЧАСАМ, то пустые значения макс/мин температур
+                            "",
+                            ""
+                        ),
+                        WeatherModel(  //прогноз по ДНЯМ
+                            "Minsk",
+                            "26/07/2022",
+                            "",
+                            "Sunny",
+                            "//cdn.weatherapi.com/weather/64x64/day/116.png",
+                            "26°",  // если прогноз по ЧАСАМ, то пустые значения макс/мин температур
+                            "12°",
+                            ""
+                        ),
+                    )
+                ) {
+                        _, item -> ListItem(item) //при запуске берутся items из WeatherModel по очереди и срздаётся список ListItem
                 }
             }
         }

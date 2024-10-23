@@ -14,21 +14,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.weatherapi.ui.theme.BlueLight
+import com.example.weatherapicompose.data.WeatherModel
 
-@Preview(showBackground = true)
 @Composable
-fun ListItem() {  //аналог CardView для RecyclerView
+fun ListItem(item: WeatherModel) {  //аналог CardView для RecyclerView
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 3.dp),
         backgroundColor = BlueLight,
-        shape = RoundedCornerShape(5.dp)
+        shape = RoundedCornerShape(5.dp),
+        elevation = 0.dp
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -42,19 +42,19 @@ fun ListItem() {  //аналог CardView для RecyclerView
                     bottom = 5.dp
                 )
             ) {
-                Text(text = "12:00")  //пока хардкодим данные
+                Text(text = item.time)
                 Text(
-                    text = "Sunny",
+                    text = item.condition,
                     color = Color.White
                 )
             }
             Text(
-                text = "25ªC",
+                text = item.currentTemp.ifEmpty { "${item.maxTemp}/${item.minTemp}" },
                 color = Color.White,
                 style = TextStyle(fontSize = 25.sp)
             )
             AsyncImage( //для загрузки фото с сервера
-                model = "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+                model = "https:" + item.icon,  //передаём ссылку иконки от сервера по ссылке
                 contentDescription = "image5",
                 modifier = Modifier
                     .size(35.dp)
