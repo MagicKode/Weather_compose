@@ -20,6 +20,7 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +39,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 
 @Composable
 fun MainCard(currentDay: MutableState<WeatherModel>) {
@@ -89,7 +92,11 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
                     color = Color.White
                 )
                 Text(
-                    text = currentDay.value.currentTemp.toFloat().toInt().toString() + "°C",
+                    text = if (currentDay.value.currentTemp.isNotEmpty())
+                        currentDay.value.currentTemp.toFloat().toInt().toString() + "°C"
+                    else "${currentDay.value.maxTemp.toFloat().toInt()}" +
+                            "°C/${currentDay.value.minTemp.toFloat().toInt()}°C",
+
                     style = TextStyle(fontSize = 65.sp),
                     color = Color.White
                 )
@@ -114,8 +121,10 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
                     }
                     Text(
                         text = "${
-                            currentDay.value.maxTemp.toFloat().toInt()}°C/${
-                            currentDay.value.minTemp.toFloat().toInt()}°C",
+                            currentDay.value.maxTemp.toFloat().toInt()
+                        }°C/${
+                            currentDay.value.minTemp.toFloat().toInt()
+                        }°C",
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White
                     )
@@ -142,7 +151,7 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
-fun TabLayout(daysList: MutableState<List<WeatherModel>>) {
+fun TabLayout(daysList: MutableState<List<WeatherModel>>, currentDay: MutableState<WeatherModel>) {
     val tabList = listOf("HOURS", "DAYS")  //список табов (кнопок) для переключения
     val pagerState = rememberPagerState()  // для сохранения состояния
     val tabIndex = pagerState.currentPage  // сохранения состояния при запуске, открыта сстраница
@@ -186,15 +195,37 @@ fun TabLayout(daysList: MutableState<List<WeatherModel>>) {
             state = pagerState,
             modifier = Modifier.weight(1.0f)
         ) { index ->     // указывает какая страница открыта
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                itemsIndexed(
-                    daysList.value
-                ) { _, item ->
-                    ListItem(item) //при запуске берутся items из WeatherModel по очереди и срздаётся список ListItem
-                }
+            val list = when(index) {     //индекс указывает какую страницу мы выбираем и вызывает соответствующие методы получения данных (день/часы)
+                0 -> getWeatherByHours(currentDay.value.hours)
+                1 -> daysList.value
+                else -> daysList.value  //значение по умолчанию
             }
+            MainList(list, currentDay)
         }
     }
+}
+
+/**
+ *  //Прогноз погоды по ЧАСАМ
+ */
+private fun getWeatherByHours(hours: String): List<WeatherModel> {
+    if (hours.isEmpty()) return listOf()
+    val hoursArray = JSONArray(hours)  //получение массив по
+    val list = ArrayList<WeatherModel>()
+    for (i in 0 until hoursArray.length()) {   //запускается цикл и создаётся новый WeatherModel
+        val item = hoursArray[i] as JSONObject
+        list.add(
+            WeatherModel(  //заполнение WeatherModel
+                "",
+                item.getString("time"),
+                item.getString("temp_c").toFloat().toInt().toString() + "°C",
+                item.getJSONObject("condition").getString("text"),
+                item.getJSONObject("condition").getString("icon"),
+                "",
+                "",
+                ""
+            )
+        )
+    }
+    return list
 }

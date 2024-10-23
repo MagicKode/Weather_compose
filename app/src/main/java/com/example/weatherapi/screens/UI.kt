@@ -1,15 +1,20 @@
 package com.example.weatherapi.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,12 +25,36 @@ import coil.compose.AsyncImage
 import com.example.weatherapi.ui.theme.BlueLight
 import com.example.weatherapi.data.WeatherModel
 
+/**
+ * Функция для получения информации по ДНЯМ, при нажатии на таб, либо прогноз по ЧАСАМ
+ */
 @Composable
-fun ListItem(item: WeatherModel) {  //аналог CardView для RecyclerView
+fun MainList(list: List<WeatherModel>, currentDay: MutableState<WeatherModel>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        itemsIndexed(
+            list
+        ) { _, item ->
+            ListItem(
+                item,
+                currentDay
+            ) //при запуске берутся items из WeatherModel по очереди и срздаётся список ListItem
+        }
+    }
+
+}
+
+@Composable      //аналог CardView для RecyclerView
+fun ListItem(item: WeatherModel, currentDay: MutableState<WeatherModel>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 3.dp),
+            .padding(top = 3.dp)
+            .clickable {
+                if(item.hours.isEmpty()) return@clickable  //если прогноз по часам, то при нажатии ничего не происходит
+                currentDay.value = item  //при нажатии, передаём WeatherModel, день, который я выбрал.
+            },
         backgroundColor = BlueLight,
         shape = RoundedCornerShape(5.dp),
         elevation = 0.dp

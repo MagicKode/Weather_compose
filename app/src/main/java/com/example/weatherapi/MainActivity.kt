@@ -35,16 +35,18 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(listOf<WeatherModel>())
                 }
                 val currentDay = remember {
-                    mutableStateOf(WeatherModel(
-                        "",
-                        "",
-                        "0.0", //инфа по умолчанию начальная, чтобы не передовать Пустую строку, иначе Exception вылетает
-                        "",
-                        "",
-                        "0.0",
-                        "0.0",
-                        ""
-                    ))
+                    mutableStateOf(
+                        WeatherModel(
+                            "",
+                            "",
+                            "0.0", //инфа по умолчанию начальная, чтобы не передовать Пустую строку, иначе Exception вылетает
+                            "",
+                            "",
+                            "0.0",
+                            "0.0",
+                            ""
+                        )
+                    )
                 }
                 getData("Minsk", this, daysList, currentDay)
                 Image(
@@ -57,7 +59,7 @@ class MainActivity : ComponentActivity() {
                 )
                 Column {
                     MainCard(currentDay)
-                    TabLayout(daysList)
+                    TabLayout(daysList, currentDay)
                 }
             }
         }
