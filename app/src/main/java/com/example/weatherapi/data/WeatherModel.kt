@@ -1,4 +1,4 @@
-package com.example.weatherapicompose.data
+package com.example.weatherapi.data
 
 data class WeatherModel(  //основные параметры погоды, из response body
     val city: String,

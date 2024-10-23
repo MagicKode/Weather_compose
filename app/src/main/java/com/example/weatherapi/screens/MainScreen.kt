@@ -19,6 +19,7 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.weatherapi.R
 import com.example.weatherapi.ui.theme.BlueLight
-import com.example.weatherapicompose.data.WeatherModel
+import com.example.weatherapi.data.WeatherModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -138,7 +139,7 @@ fun MainCard() {
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
-fun TabLayout() {
+fun TabLayout(daysList: MutableState<List<WeatherModel>>) {
     val tabList = listOf("HOURS", "DAYS")  //список табов (кнопок) для переключения
     val pagerState = rememberPagerState()  // для сохранения состояния
     val tabIndex = pagerState.currentPage  // сохранения состояния при запуске, открыта сстраница
@@ -186,30 +187,9 @@ fun TabLayout() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 itemsIndexed(
-                    listOf(  //пока хардкодим параметры
-                        WeatherModel(  //прогноз по ЧАСАМ
-                            "Minsk",
-                            "10:00",
-                            "25°C",
-                            "Sunny",
-                            "//cdn.weatherapi.com/weather/64x64/day/116.png",
-                            "",  // если прогноз по ЧАСАМ, то пустые значения макс/мин температур
-                            "",
-                            ""
-                        ),
-                        WeatherModel(  //прогноз по ДНЯМ
-                            "Minsk",
-                            "26/07/2022",
-                            "",
-                            "Sunny",
-                            "//cdn.weatherapi.com/weather/64x64/day/116.png",
-                            "26°",  // если прогноз по ЧАСАМ, то пустые значения макс/мин температур
-                            "12°",
-                            ""
-                        ),
-                    )
-                ) {
-                        _, item -> ListItem(item) //при запуске берутся items из WeatherModel по очереди и срздаётся список ListItem
+                    daysList.value
+                ) { _, item ->
+                    ListItem(item) //при запуске берутся items из WeatherModel по очереди и срздаётся список ListItem
                 }
             }
         }

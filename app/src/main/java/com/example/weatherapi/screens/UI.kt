@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.weatherapi.ui.theme.BlueLight
-import com.example.weatherapicompose.data.WeatherModel
+import com.example.weatherapi.data.WeatherModel
 
 @Composable
 fun ListItem(item: WeatherModel) {  //аналог CardView для RecyclerView
