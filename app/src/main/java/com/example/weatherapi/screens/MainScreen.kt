@@ -27,22 +27,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.weatherapi.R
-import com.example.weatherapi.ui.theme.BlueLight
 import com.example.weatherapi.data.WeatherModel
+import com.example.weatherapi.ui.theme.BlueLight
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
-fun MainCard() {
+fun MainCard(currentDay: MutableState<WeatherModel>) {
     //Основной контейнер Column, гед будут карточки и всё остальное
     Column(
         modifier = Modifier
@@ -67,14 +65,17 @@ fun MainCard() {
                 ) {
 
                     Text(
-                        modifier = Modifier.padding(top = 8.dp, start = 8.dp),
-                        text = "20 Jun 2022 13:00",
+                        modifier = Modifier.padding(
+                            top = 8.dp,
+                            start = 8.dp
+                        ),
+                        text = currentDay.value.time,
                         style = TextStyle(fontSize = 15.sp),
                         color = Color.White
                     )
 
                     AsyncImage( //для загрузки фото с сервера
-                        model = "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+                        model = "https:" + currentDay.value.icon,
                         contentDescription = "image2",
                         modifier = Modifier
                             .size(35.dp)
@@ -83,17 +84,17 @@ fun MainCard() {
 
                 }
                 Text(
-                    text = "Minsk",
+                    text = currentDay.value.city,
                     style = TextStyle(fontSize = 24.sp),
                     color = Color.White
                 )
                 Text(
-                    text = "23°C",
+                    text = currentDay.value.currentTemp.toFloat().toInt().toString() + "°C",
                     style = TextStyle(fontSize = 65.sp),
                     color = Color.White
                 )
                 Text(
-                    text = "Sunny",
+                    text = currentDay.value.condition,
                     style = TextStyle(fontSize = 16.sp),
                     color = Color.White
                 )
@@ -112,7 +113,9 @@ fun MainCard() {
                         )
                     }
                     Text(
-                        text = "23°C/12°C",
+                        text = "${
+                            currentDay.value.maxTemp.toFloat().toInt()}°C/${
+                            currentDay.value.minTemp.toFloat().toInt()}°C",
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White
                     )

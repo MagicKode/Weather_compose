@@ -34,7 +34,19 @@ class MainActivity : ComponentActivity() {
                 val daysList = remember {
                     mutableStateOf(listOf<WeatherModel>())
                 }
-                getData("Minsk", this, daysList)
+                val currentDay = remember {
+                    mutableStateOf(WeatherModel(
+                        "",
+                        "",
+                        "0.0", //инфа по умолчанию начальная, чтобы не передовать Пустую строку, иначе Exception вылетает
+                        "",
+                        "",
+                        "0.0",
+                        "0.0",
+                        ""
+                    ))
+                }
+                getData("Minsk", this, daysList, currentDay)
                 Image(
                     painter = painterResource(id = R.drawable.weather_bg),
                     contentDescription = "image1",
@@ -44,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     contentScale = ContentScale.FillBounds  // чтобы фон растянулся на весь экран без обрезания
                 )
                 Column {
-                    MainCard()
+                    MainCard(currentDay)
                     TabLayout(daysList)
                 }
             }
@@ -61,7 +73,8 @@ class MainActivity : ComponentActivity() {
  */
 private fun getData(
     city: String, context: Context,
-    daysList: MutableState<List<WeatherModel>>
+    daysList: MutableState<List<WeatherModel>>,
+    currentDay: MutableState<WeatherModel>
 ) {
     val url = "https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}" +
             "&q=${city}" +
@@ -74,6 +87,7 @@ private fun getData(
         url,
         { response ->  //это и есть responsebody
             val list = getWeatherByDay(response)
+            currentDay.value = list[0]  //на 0 позицию списка запишется СЕГОДНЯШНИЙ день с сервера
             daysList.value = list
         },
         {
