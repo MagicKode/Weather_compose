@@ -22,6 +22,7 @@ import com.example.weatherapi.screens.MainCard
 import com.example.weatherapi.screens.TabLayout
 import com.example.weatherapi.ui.theme.WeatherApiTheme
 import com.example.weatherapi.data.WeatherModel
+import com.example.weatherapi.screens.DialogSearch
 import org.json.JSONObject
 
 const val API_KEY = "02e11a1c270b436e988143921241610"
@@ -34,6 +35,10 @@ class MainActivity : ComponentActivity() {
                 val daysList = remember {
                     mutableStateOf(listOf<WeatherModel>())
                 }
+                val dialogState = remember {   //функция нужно ли показывать диалогили нет
+                    mutableStateOf(false)
+                }
+
                 val currentDay = remember {
                     mutableStateOf(
                         WeatherModel(
@@ -48,6 +53,12 @@ class MainActivity : ComponentActivity() {
                         )
                     )
                 }
+                if (dialogState.value) {
+                    DialogSearch(dialogState, onSubmit = {
+                        getData(it, this, daysList, currentDay)
+                    })
+                }
+
                 getData("Minsk", this, daysList, currentDay)
                 Image(
                     painter = painterResource(id = R.drawable.weather_bg),
@@ -58,7 +69,12 @@ class MainActivity : ComponentActivity() {
                     contentScale = ContentScale.FillBounds  // чтобы фон растянулся на весь экран без обрезания
                 )
                 Column {
-                    MainCard(currentDay)
+                    MainCard(currentDay, onClickSync = {
+                        getData("Minsk", this@MainActivity, daysList, currentDay)
+                    }, onClickSearch = {
+                        dialogState.value = true
+                    }
+                    )
                     TabLayout(daysList, currentDay)
                 }
             }

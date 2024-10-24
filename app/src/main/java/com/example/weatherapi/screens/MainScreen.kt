@@ -4,12 +4,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -20,7 +17,6 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +39,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 @Composable
-fun MainCard(currentDay: MutableState<WeatherModel>) {
+fun MainCard(
+    currentDay: MutableState<WeatherModel>,
+    onClickSync: () -> Unit,  //функция для синхронизации/ обновления погоды
+    onClickSearch: () -> Unit  // функция для поиска
+) {
     //Основной контейнер Column, гед будут карточки и всё остальное
     Column(
         modifier = Modifier
@@ -109,9 +109,10 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    IconButton(onClick = {
-
-                    }
+                    IconButton(
+                        onClick = {
+                            onClickSearch.invoke()  //функция при нажатии на кнопку поиска
+                        }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_search),
@@ -128,9 +129,10 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White
                     )
-                    IconButton(onClick = {
-
-                    }
+                    IconButton(
+                        onClick = {
+                            onClickSync.invoke()  //функция при нажатии на кнопку обновления
+                        }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_sync),
@@ -195,11 +197,12 @@ fun TabLayout(daysList: MutableState<List<WeatherModel>>, currentDay: MutableSta
             state = pagerState,
             modifier = Modifier.weight(1.0f)
         ) { index ->     // указывает какая страница открыта
-            val list = when(index) {     //индекс указывает какую страницу мы выбираем и вызывает соответствующие методы получения данных (день/часы)
-                0 -> getWeatherByHours(currentDay.value.hours)
-                1 -> daysList.value
-                else -> daysList.value  //значение по умолчанию
-            }
+            val list =
+                when (index) {     //индекс указывает какую страницу мы выбираем и вызывает соответствующие методы получения данных (день/часы)
+                    0 -> getWeatherByHours(currentDay.value.hours)
+                    1 -> daysList.value
+                    else -> daysList.value  //значение по умолчанию
+                }
             MainList(list, currentDay)
         }
     }
